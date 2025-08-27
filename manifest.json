@@ -1,0 +1,22 @@
+{
+  "name": "Safai Sathi - Professional Cleaning Services",
+  "short_name": "Safai Sathi",
+  "description": "Professional, eco-friendly cleaning for homes, offices & hotels. A spotless space is just one call away.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#004C99",
+  "icons": [
+    {
+      "src": "images/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "images/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
