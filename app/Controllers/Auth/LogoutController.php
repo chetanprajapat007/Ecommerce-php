@@ -11,7 +11,7 @@ class LogoutController extends BaseController
         // Destroy session
         session()->destroy();
         
-        return redirect()->to('/login');
+        return redirect()->to('login')->with('success', 'You have been logged out successfully');
     }
 }
 

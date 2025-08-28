@@ -5,18 +5,23 @@ namespace App\Controllers\Employee;
 use App\Controllers\BaseController;
 use App\Models\LeadModel;
 use App\Models\CallLogModel;
-use App\Models\UserModel;
-use App\Models\StateModel;
-use App\Models\CityModel;
+use App\Models\UserAssignedLocationModel;
 
 class DashboardController extends BaseController
 {
+    protected $leadModel;
+    protected $callLogModel;
+    protected $userAssignedLocationModel;
+    
+    public function __construct()
+    {
+        $this->leadModel = new LeadModel();
+        $this->callLogModel = new CallLogModel();
+        $this->userAssignedLocationModel = new UserAssignedLocationModel();
+    }
+    
     public function index()
     {
-        $leadModel = new LeadModel();
-        $callLogModel = new CallLogModel();
-        $userModel = new UserModel();
-        
         // Get current employee ID
         $employeeId = session()->get('user_id');
         
@@ -37,19 +42,19 @@ class DashboardController extends BaseController
         }
         
         // Get lead counts by status
-        $statusCounts = $leadModel->getLeadCountsByStatus($filters);
+        $leadCounts = $this->leadModel->getLeadCountsByStatus($filters);
         
         // Get upcoming follow-ups
-        $followUps = $callLogModel->getUpcomingFollowUps($filters, 10);
+        $followUps = $this->callLogModel->getUpcomingFollowUps($filters, 10);
         
-        // Get all leads with filters
-        $leads = $leadModel->getLeadsWithDetails(10, 0, $filters);
+        // Get recent leads
+        $recentLeads = $this->leadModel->getLeadsWithDetails(10, 0, $filters);
         
         $data = [
             'title' => 'Dashboard',
-            'statusCounts' => $statusCounts,
+            'leadCounts' => $leadCounts,
             'followUps' => $followUps,
-            'leads' => $leads,
+            'recentLeads' => $recentLeads,
             'filters' => [
                 'start_date' => $startDate,
                 'end_date' => $endDate

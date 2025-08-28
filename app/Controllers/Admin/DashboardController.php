@@ -6,19 +6,22 @@ use App\Controllers\BaseController;
 use App\Models\LeadModel;
 use App\Models\CallLogModel;
 use App\Models\UserModel;
-use App\Models\StateModel;
-use App\Models\CityModel;
 
 class DashboardController extends BaseController
 {
+    protected $leadModel;
+    protected $callLogModel;
+    protected $userModel;
+    
+    public function __construct()
+    {
+        $this->leadModel = new LeadModel();
+        $this->callLogModel = new CallLogModel();
+        $this->userModel = new UserModel();
+    }
+    
     public function index()
     {
-        $leadModel = new LeadModel();
-        $callLogModel = new CallLogModel();
-        $userModel = new UserModel();
-        $stateModel = new StateModel();
-        $cityModel = new CityModel();
-        
         // Get filter parameters
         $employeeId = $this->request->getGet('employee_id');
         $startDate = $this->request->getGet('start_date');
@@ -39,23 +42,20 @@ class DashboardController extends BaseController
         }
         
         // Get lead counts by status
-        $statusCounts = $leadModel->getLeadCountsByStatus($filters);
+        $leadCounts = $this->leadModel->getLeadCountsByStatus($filters);
         
         // Get upcoming follow-ups
-        $followUps = $callLogModel->getUpcomingFollowUps($filters, 10);
+        $followUps = $this->callLogModel->getUpcomingFollowUps($filters, 10);
         
-        // Get all employees for filter
-        $employees = $userModel->where('role', 'employee')->findAll();
-        
-        // Get all leads with filters
-        $leads = $leadModel->getLeadsWithDetails(10, 0, $filters);
+        // Get recent leads
+        $recentLeads = $this->leadModel->getLeadsWithDetails(10, 0, $filters);
         
         $data = [
             'title' => 'Dashboard',
-            'statusCounts' => $statusCounts,
+            'leadCounts' => $leadCounts,
             'followUps' => $followUps,
-            'employees' => $employees,
-            'leads' => $leads,
+            'recentLeads' => $recentLeads,
+            'employees' => $this->userModel->where('role', 'employee')->findAll(),
             'filters' => [
                 'employee_id' => $employeeId,
                 'start_date' => $startDate,

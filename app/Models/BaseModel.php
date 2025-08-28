@@ -6,68 +6,48 @@ use CodeIgniter\Model;
 
 class BaseModel extends Model
 {
-    protected $useTimestamps = true;
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    protected $primaryKey = 'id';
+    protected $useAutoIncrement = true;
+    protected $returnType = 'array';
     protected $useSoftDeletes = false;
     
-    // Fields for audit trail
-    protected $createdByField = 'created_by';
-    protected $updatedByField = 'updated_by';
+    protected $useTimestamps = false;
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
+    protected $deletedField = 'deleted_at';
     
-    // Whether this model has audit trail fields
-    protected $hasAuditTrail = true;
+    protected $skipValidation = false;
     
     /**
-     * Override the insert method to include created_by
+     * Get the name of the user who created the record
+     *
+     * @param int $userId
+     * @return string
      */
-    public function insert($data = null, bool $returnID = true)
+    protected function getCreatedByName($userId)
     {
-        if ($this->hasAuditTrail && isset($this->createdByField) && !isset($data[$this->createdByField])) {
-            $data[$this->createdByField] = session()->get('user_id') ?? null;
-        }
+        $userModel = new UserModel();
+        $user = $userModel->find($userId);
         
-        return parent::insert($data, $returnID);
+        return $user ? $user['name'] : 'Unknown';
     }
     
     /**
-     * Override the update method to include updated_by
+     * Get the name of the user who updated the record
+     *
+     * @param int $userId
+     * @return string
      */
-    public function update($id = null, $data = null): bool
+    protected function getUpdatedByName($userId)
     {
-        if ($this->hasAuditTrail && isset($this->updatedByField) && !isset($data[$this->updatedByField])) {
-            $data[$this->updatedByField] = session()->get('user_id') ?? null;
-        }
-        
-        return parent::update($id, $data);
-    }
-    
-    /**
-     * Get the user who created the record
-     */
-    public function getCreatedByUser($id)
-    {
-        $data = $this->find($id);
-        if (!$data || !isset($data[$this->createdByField]) || !$data[$this->createdByField]) {
+        if (!$userId) {
             return null;
         }
         
         $userModel = new UserModel();
-        return $userModel->find($data[$this->createdByField]);
-    }
-    
-    /**
-     * Get the user who last updated the record
-     */
-    public function getUpdatedByUser($id)
-    {
-        $data = $this->find($id);
-        if (!$data || !isset($data[$this->updatedByField]) || !$data[$this->updatedByField]) {
-            return null;
-        }
+        $user = $userModel->find($userId);
         
-        $userModel = new UserModel();
-        return $userModel->find($data[$this->updatedByField]);
+        return $user ? $user['name'] : 'Unknown';
     }
 }
 

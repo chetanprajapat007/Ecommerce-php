@@ -9,13 +9,12 @@ class LoginController extends BaseController
 {
     public function index()
     {
-        // Check if already logged in
+        // If user is already logged in, redirect to appropriate dashboard
         if (session()->get('isLoggedIn')) {
-            // Redirect based on role
             if (session()->get('role') === 'admin') {
-                return redirect()->to('/admin/dashboard');
+                return redirect()->to('admin/dashboard');
             } else {
-                return redirect()->to('/employee/dashboard');
+                return redirect()->to('employee/dashboard');
             }
         }
         
@@ -25,12 +24,12 @@ class LoginController extends BaseController
     public function authenticate()
     {
         $rules = [
-            'email'    => 'required|valid_email',
-            'password' => 'required|min_length[6]',
+            'email' => 'required|valid_email',
+            'password' => 'required'
         ];
         
         if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            return redirect()->back()->withInput()->with('error', 'Invalid email or password');
         }
         
         $email = $this->request->getPost('email');
@@ -40,34 +39,34 @@ class LoginController extends BaseController
         $user = $userModel->where('email', $email)->first();
         
         if (!$user) {
-            return redirect()->back()->withInput()->with('error', 'Email or password is incorrect');
-        }
-        
-        if ($user['status'] !== 'active') {
-            return redirect()->back()->withInput()->with('error', 'Your account is inactive. Please contact the administrator.');
+            return redirect()->back()->withInput()->with('error', 'User not found');
         }
         
         if (!$userModel->verifyPassword($password, $user['password_hash'])) {
-            return redirect()->back()->withInput()->with('error', 'Email or password is incorrect');
+            return redirect()->back()->withInput()->with('error', 'Invalid password');
+        }
+        
+        if ($user['status'] !== 'active') {
+            return redirect()->back()->withInput()->with('error', 'Your account is inactive. Please contact administrator.');
         }
         
         // Set session data
         $sessionData = [
-            'user_id'             => $user['id'],
-            'name'                => $user['name'],
-            'email'               => $user['email'],
-            'role'                => $user['role'],
+            'user_id' => $user['id'],
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'role' => $user['role'],
             'is_data_entry_allowed' => $user['is_data_entry_allowed'],
-            'isLoggedIn'          => true,
+            'isLoggedIn' => true
         ];
         
         session()->set($sessionData);
         
-        // Redirect based on role
+        // Redirect to appropriate dashboard
         if ($user['role'] === 'admin') {
-            return redirect()->to('/admin/dashboard');
+            return redirect()->to('admin/dashboard');
         } else {
-            return redirect()->to('/employee/dashboard');
+            return redirect()->to('employee/dashboard');
         }
     }
 }

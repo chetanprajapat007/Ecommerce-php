@@ -4,113 +4,70 @@ namespace App\Models;
 
 class UserAssignedLocationModel extends BaseModel
 {
-    protected $table         = 'user_assigned_locations';
-    protected $primaryKey    = 'id';
+    protected $table = 'user_assigned_locations';
     protected $allowedFields = [
         'user_id', 'state_id', 'city_id'
     ];
     
-    // This model doesn't have created_by and updated_by fields
-    protected $hasAuditTrail = false;
-    
     protected $validationRules = [
-        'user_id'  => 'required|numeric|is_not_unique[users.id]',
+        'user_id' => 'required|numeric|is_not_unique[users.id]',
         'state_id' => 'required|numeric|is_not_unique[states.id]',
-        'city_id'  => 'permit_empty|numeric|is_not_unique[cities.id,id,{id}]',
+        'city_id' => 'required|numeric|is_not_unique[cities.id]'
     ];
     
     /**
-     * Assign a state to a user
+     * Get assigned locations with state and city details
+     *
+     * @param int $userId
+     * @return array
      */
-    public function assignStateToUser(int $userId, int $stateId)
+    public function getAssignedLocationsWithDetails($userId)
     {
-        // Check if assignment already exists
-        $existing = $this->where('user_id', $userId)
-                        ->where('state_id', $stateId)
-                        ->where('city_id IS NULL')
-                        ->first();
-        
-        if ($existing) {
-            return true; // Already assigned
-        }
-        
-        return $this->insert([
-            'user_id'  => $userId,
-            'state_id' => $stateId,
-            'city_id'  => null
-        ]);
+        return $this->select('user_assigned_locations.*, states.name as state_name, cities.name as city_name')
+            ->join('states', 'states.id = user_assigned_locations.state_id')
+            ->join('cities', 'cities.id = user_assigned_locations.city_id')
+            ->where('user_assigned_locations.user_id', $userId)
+            ->findAll();
     }
     
     /**
-     * Assign a city to a user
+     * Get assigned states for a user
+     *
+     * @param int $userId
+     * @return array
      */
-    public function assignCityToUser(int $userId, int $cityId)
+    public function getAssignedStates($userId)
     {
-        // Get the state_id for this city
-        $cityModel = new CityModel();
-        $city = $cityModel->find($cityId);
+        $locations = $this->where('user_id', $userId)->findAll();
         
-        if (!$city) {
-            return false;
+        $stateIds = [];
+        
+        foreach ($locations as $location) {
+            if (!in_array($location['state_id'], $stateIds)) {
+                $stateIds[] = $location['state_id'];
+            }
         }
         
-        // Check if assignment already exists
-        $existing = $this->where('user_id', $userId)
-                        ->where('state_id', $city['state_id'])
-                        ->where('city_id', $cityId)
-                        ->first();
-        
-        if ($existing) {
-            return true; // Already assigned
-        }
-        
-        return $this->insert([
-            'user_id'  => $userId,
-            'state_id' => $city['state_id'],
-            'city_id'  => $cityId
-        ]);
+        return $stateIds;
     }
     
     /**
-     * Remove all location assignments for a user
+     * Get assigned cities for a user
+     *
+     * @param int $userId
+     * @return array
      */
-    public function removeAllAssignmentsForUser(int $userId)
+    public function getAssignedCities($userId)
     {
-        return $this->where('user_id', $userId)->delete();
-    }
-    
-    /**
-     * Get all users assigned to a specific state
-     */
-    public function getUsersByState(int $stateId)
-    {
-        $userIds = $this->select('DISTINCT(user_id)')
-                       ->where('state_id', $stateId)
-                       ->findAll();
+        $locations = $this->where('user_id', $userId)->findAll();
         
-        if (empty($userIds)) {
-            return [];
+        $cityIds = [];
+        
+        foreach ($locations as $location) {
+            $cityIds[] = $location['city_id'];
         }
         
-        $userModel = new UserModel();
-        return $userModel->whereIn('id', array_column($userIds, 'user_id'))->findAll();
-    }
-    
-    /**
-     * Get all users assigned to a specific city
-     */
-    public function getUsersByCity(int $cityId)
-    {
-        $userIds = $this->select('DISTINCT(user_id)')
-                       ->where('city_id', $cityId)
-                       ->findAll();
-        
-        if (empty($userIds)) {
-            return [];
-        }
-        
-        $userModel = new UserModel();
-        return $userModel->whereIn('id', array_column($userIds, 'user_id'))->findAll();
+        return $cityIds;
     }
 }
 
