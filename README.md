@@ -1,68 +1,73 @@
-# CodeIgniter 4 Application Starter
+# Safai Sathi Landing Page
 
-## What is CodeIgniter?
+A professional, responsive landing page for Safai Sathi cleaning services built with React and TailwindCSS.
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## Features
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+- Fully responsive design (mobile-first approach)
+- Modern UI with premium look and feel
+- Optimized for conversions with strategic CTAs
+- Animations using Framer Motion
+- SEO-friendly structure
+- Fast loading performance
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## Color Scheme
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+- Primary Colors:
+  - Royal Blue (#004C99) - Headlines, CTA buttons, and key accents
+  - Vibrant Lime Green (#8BC53F) - Highlights, icons, and CTA button pops
 
-## Installation & updates
+- Secondary Colors:
+  - White (#FFFFFF) - Backgrounds and clean text areas
+  - Light Gray (#F0F0F0) - Section dividers, subtle backgrounds
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+## Page Structure
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+1. Hero Section
+2. Benefits Section
+3. Services Section
+4. Before & After Showcase
+5. Testimonials Section
+6. Trust Badges Section
+7. FAQ Section
+8. Final Call-to-Action
+9. Footer
 
-## Setup
+## How to Use
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+1. Clone this repository
+2. Open the `index.html` file in your browser to view the landing page
+3. Customize the content in `app.js` to match your specific needs
+4. Replace placeholder images in the `images` folder with your actual images
+5. Update contact information and service details as needed
 
-## Important Change with index.php
+## Image Placeholders
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+The landing page uses placeholder images that should be replaced with actual images of:
+- Indian cleaning professionals in branded uniforms
+- Clean Indian homes, offices, and hotels
+- Before and after cleaning comparisons
+- Indian testimonial clients
+- Trust badges and certifications
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+## Customization
 
-**Please** read the user guide for a better explanation of how CI4 works!
+- Update the phone number in the CTA buttons
+- Modify service offerings in the Services Section
+- Add or remove FAQ items as needed
+- Change testimonials to reflect actual client feedback
+- Update address and contact information in the footer
 
-## Repository Management
+## Technologies Used
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+- HTML5
+- CSS3
+- JavaScript
+- React
+- TailwindCSS
+- Framer Motion
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+## License
 
-## Server Requirements
+This landing page template is available for use by Safai Sathi cleaning services.
 
-PHP version 8.1 or higher is required, with the following extensions installed:
-
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library

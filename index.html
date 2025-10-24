@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Safai Sathi - Professional Cleaning Services</title>
+  <meta name="description" content="Professional, eco-friendly cleaning for homes, offices & hotels. A spotless space is just one call away.">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#004C99">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'royal-blue': '#004C99',
+            'lime-green': '#8BC53F',
+            'light-gray': '#F0F0F0',
+          },
+          fontFamily: {
+            'montserrat': ['Montserrat', 'sans-serif'],
+          },
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer base {
+      body {
+        @apply font-montserrat text-gray-800;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        @apply font-bold text-royal-blue;
+      }
+      .btn-primary {
+        @apply bg-royal-blue text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-lime-green transition duration-300 ease-in-out transform hover:scale-105;
+      }
+      .btn-secondary {
+        @apply bg-lime-green text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-royal-blue transition duration-300 ease-in-out transform hover:scale-105;
+      }
+      .service-card {
+        @apply bg-white rounded-lg shadow-lg p-6 transition duration-300 ease-in-out transform hover:scale-105;
+      }
+      .testimonial-card {
+        @apply bg-white rounded-lg shadow-lg p-6;
+      }
+      .fade-in {
+        animation: fadeIn 1s ease-in-out;
+      }
+      @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+      }
+    }
+  </style>
+</head>
+<body class="antialiased">
+  <div id="root"></div>
+
+  <script type="text/babel" src="app.js"></script>
+  <script src="script.js"></script>
+  <script>
+    // Register Service Worker for PWA support
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(registration => {
+            console.log('ServiceWorker registration successful with scope: ', registration.scope);
+          })
+          .catch(error => {
+            console.log('ServiceWorker registration failed: ', error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
